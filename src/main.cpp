@@ -1,5 +1,5 @@
 #define _DEBUG
-#define ENABLED_ASYNCIO true
+#define ENABLED_ASYNCIO false
 #include <main.h>
 
 #ifdef DEBUG

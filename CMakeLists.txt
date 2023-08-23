@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.22)
 
-option(ENABLED_ASYNCIO "启用协程" ON)
+option(ENABLED_ASYNCIO "启用协程" OFF)
 
 #vcpkg
 # 手动设置到你的vcpkg根目录
