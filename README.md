@@ -1,5 +1,5 @@
 # Lua Draw
-一个Lua + Svg + C++的后端绘图项目<br>
+一个Lua + SVG + C++的后端绘图项目<br>
 
 ## C++标准是多少?
 C++20
@@ -32,9 +32,7 @@ Lua5.4
 ※使用了PkgConfig
 
 ## Lua用了哪些库?
-<code>
-- lua-cjson
-</code>
+<code>- lua-cjson</code>
 
 ## 怎么编译
 
