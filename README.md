@@ -1,6 +1,9 @@
 # Lua Draw
 一个Lua + SVG + C++的后端绘图项目<br>
 
+## 使用编译器
+gcc 11.3.0
+
 ## C++标准是多少?
 C++20
 
@@ -28,7 +31,7 @@ Lua5.4
 - libmagick++
 </code></pre>
 
-※使用了vcpkg需要自己手动配置cmake的vcpkg目录
+※使用了vcpkg需要自己手动配置cmake的vcpkg目录<br>
 ※使用了PkgConfig
 
 ## Lua用了哪些库?
