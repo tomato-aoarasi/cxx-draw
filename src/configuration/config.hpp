@@ -49,7 +49,7 @@ namespace Global {
 	inline self::define::UuidInfo uuid_info;
 	inline snowflake_t snowflake_uuid;
 	inline self::define::ExecutableFileInfo execute_info;
-	inline std::filesystem::path svg_temp_path { Config::config_yaml["temporary"]["svg-path"].as<std::string>()};
+	inline std::filesystem::path temp_path { Config::config_yaml["temporary"]["path"].as<std::string>()};
 	inline std::filesystem::path lua_directory{ Config::config_yaml["lua"]["directory"].as<std::string>()};
 };
 
@@ -93,8 +93,8 @@ namespace Config {
 
 		// svg临时文件夹的创建
 		{
-			if (!std::filesystem::exists(Global::svg_temp_path)) {  // 如果目录不存在，则创建
-				std::filesystem::create_directory(Global::svg_temp_path);
+			if (!std::filesystem::exists(Global::temp_path)) {  // 如果目录不存在，则创建
+				std::filesystem::create_directory(Global::temp_path);
 			}
 		}
 		// lua脚本集目录创建

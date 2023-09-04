@@ -27,6 +27,7 @@
 #endif
 
 #include <configuration/define.hpp>
+#include "opencv2/opencv.hpp"
 #include "Poco/UUID.h"
 #include "Poco/UUIDGenerator.h"
 #include "Poco/DigestEngine.h"
@@ -127,6 +128,65 @@ namespace self {
 
 			return uuid.toString();
 		};
+
+		// base64解码的工具
+		inline static std::vector<uint8_t> base64Decode(const std::string& base64Str) {
+			static const std::string base64Chars =
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				"abcdefghijklmnopqrstuvwxyz"
+				"0123456789+/";
+
+			std::vector<uint8_t> data;
+			size_t i = 0;
+			uint32_t n = 0;
+			int padding = 0;
+
+			while (i < base64Str.length()) {
+				char c = base64Str[i++];
+				if (c == '=') {
+					padding++;
+					continue;
+				}
+				size_t index = base64Chars.find(c);
+				if (index == std::string::npos) {
+					continue;
+				}
+				n = (n << 6) | index;
+				if (i % 4 == 0) {
+					data.push_back((n >> 16) & 0xFF);
+					data.push_back((n >> 8) & 0xFF);
+					data.push_back(n & 0xFF);
+					n = 0;
+				}
+			}
+			if (padding > 0) {
+				n <<= padding * 6;
+				data.push_back((n >> 16) & 0xFF);
+				if (padding == 1) {
+					data.push_back((n >> 8) & 0xFF);
+				}
+			}
+			return data;
+		}
+
+		inline void saveBase64Image(const std::string& base64_data, const std::string& filename) {
+			cv::Mat save_image{};
+			try {
+				// 将base64编码的图像数据解码为二进制数据
+				auto binary_data{ base64Decode(base64_data) };
+
+				// 从内存中解码图像数据
+				save_image = cv::imdecode(binary_data, cv::IMREAD_UNCHANGED);
+
+				// 将图像保存为PNG格式文件
+				cv::imwrite(filename, save_image);
+			}
+			catch (...) {
+				save_image.release();
+				throw;
+			}
+			save_image.release();
+		}
 	};
 
 	inline crow::response HandleResponseBody(std::function<std::string(void)> f, const std::string& content_type = "application/json") {

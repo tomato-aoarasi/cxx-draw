@@ -67,7 +67,7 @@ inline void start(void) {
     // 关于其他的配置相关
     self::RouteOther other(app);
     other.favicon();
-    other.test();
+    other.draw();
 
     app.port(port).multithreaded().run_async();
 

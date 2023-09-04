@@ -7,7 +7,7 @@ db:
   sqlite:
     local: "./localDB.db"
 temporary:
-  svg-path: "./temp"
+  path: "./temp"
 lua:
   directory: "./lua"
 server:

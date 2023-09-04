@@ -22,7 +22,7 @@ namespace self {
 
 		explicit RouteOther(crow::SimpleApp& app);
 
-		void test(void);
+		void draw(void);
         void favicon(void);
 	};
 }

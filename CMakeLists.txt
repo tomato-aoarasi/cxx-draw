@@ -72,6 +72,7 @@ if (ENABLED_ASYNCIO)
 endif()
 
 find_package(Boost REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(yaml-cpp REQUIRED)
@@ -85,6 +86,10 @@ find_package(PkgConfig REQUIRED)
 # lua库
 find_package(Lua REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
+
+# opencv库
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 # cairo库
 # pkg_check_modules(CAIRO cairo)
 # message("found cario: " ${CAIRO_FOUND})
@@ -161,7 +166,7 @@ if (ENABLED_ASYNCIO)
 	target_link_libraries(${PROJECT_NAME} PUBLIC asyncio)
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENSSL_LIBRARIES} ${SQLITE_MODERN_CPP_INCLUDE_DIRS} ${LUA_LIBRARIES}
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENSSL_LIBRARIES} ${SQLITE_MODERN_CPP_INCLUDE_DIRS} ${LUA_LIBRARIES} ${OpenCV_LIBS}
 ${Boost_LIBRARIES} ${Poco_LIBRARIES} ${ImageMagick_LIBRARIES} nlohmann_json::nlohmann_json fmt::fmt sqlite3 unofficial::sqlite3::sqlite3 yaml-cpp 
 Crow::Crow spdlog::spdlog cryptopp::cryptopp libbcrypt.a)
 

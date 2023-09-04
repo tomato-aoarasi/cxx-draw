@@ -15,6 +15,7 @@ Lua5.4
 <pre><code>- boost
 - openssl
 - sqlite3
+- opencv
 - sqlite-modern-cpp
 - cryptopp
 - asyncio
