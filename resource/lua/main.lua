@@ -1,4 +1,5 @@
 local json = require("cjson")
+require("lua/lib/core")
 
 function getSvgCode(jsonObject)
     local data = json.decode(jsonObject)
@@ -15,7 +16,7 @@ function getSvgCode(jsonObject)
         file:close()
         
         -- 将内容打印出来
-        return content
+        return export.success_control(content)
     end
-    return -1
+    return export.error(1, 418, "teapot test")
 end

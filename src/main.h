@@ -32,6 +32,7 @@ namespace std {
 #include "common/log_system.hpp"
 #include "self/reusable.hpp"
 #include "route/route_other.hpp"
+#include "route/route_utils.hpp"
 
 #ifndef MAIN_H
 #define MAIN_H
@@ -68,6 +69,9 @@ inline void start(void) {
     self::RouteOther other(app);
     other.favicon();
     other.draw();
+
+    self::RouteUtils utils(app);
+    utils.gaussianBlur();
 
     app.port(port).multithreaded().run_async();
 

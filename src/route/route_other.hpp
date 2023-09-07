@@ -22,6 +22,7 @@ namespace self {
 
 		explicit RouteOther(crow::SimpleApp& app);
 
+		std::string luaHandle(std::string_view luaFilePath, std::string_view luaFunction, json data);
 		void draw(void);
         void favicon(void);
 	};

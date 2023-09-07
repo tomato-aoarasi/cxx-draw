@@ -1,6 +1,30 @@
 #include "route_other.hpp"
 
 self::RouteOther::RouteOther(crow::SimpleApp& app) : m_app{ app } {}
+std::string self::RouteOther::luaHandle(std::string_view luaFilePath, std::string_view luaFunction, json data)
+{
+	std::string result;
+	lua_State* L{ luaL_newstate() };
+	luaL_openlibs(L);
+
+	if (luaL_dofile(L, luaFilePath.data()) == LUA_OK) {
+		// 调用 getSvgCode 函数
+		lua_getglobal(L, luaFunction.data());
+		lua_pushstring(L, data.dump().c_str());
+		if (lua_pcall(L, 1, 1, 0) == LUA_OK) {
+			// 检查返回值类型
+			if (lua_isstring(L, -1)) {
+				// 读取返回值
+				result = lua_tostring(L, -1);
+			}
+		}
+	} else {
+		lua_close(L);
+		throw self::HTTPException(500, "lua script load failure."s);
+	}
+	lua_close(L);
+	return result;
+}
 void self::RouteOther::draw(void) {
 	// 图标
 	CROW_ROUTE(this->m_app, "/draw/<string>/<string>").methods(crow::HTTPMethod::Post)([&](const crow::request req, const std::string& lua_file_name, const std::string& lua_function_name) {
@@ -34,28 +58,15 @@ void self::RouteOther::draw(void) {
 			}
 
 			// 定义SVG代码字符串
-			std::string svg_code{ }, lua_path{ Global::lua_directory / (lua_file_name + ".lua"s) };
+			std::string lua_path{ Global::lua_directory / (lua_file_name + ".lua"s) };
 
-			lua_State* L{ luaL_newstate() };
-			luaL_openlibs(L);
+			std::string return_data{ luaHandle(lua_path, lua_function_name, json_data) };
 
-			if (luaL_dofile(L, lua_path.c_str()) == LUA_OK) {
-				// 调用 getSvgCode 函数
-				lua_getglobal(L, lua_function_name.c_str());
-				lua_pushstring(L, json_data.dump().c_str());
-				if (lua_pcall(L, 1, 1, 0) == LUA_OK) {
-					// 检查返回值类型
-					if (lua_isstring(L, -1)) {
-						// 读取返回值
-						svg_code = lua_tostring(L, -1);
-					}
-				}
-			}
-			else {
-				lua_close(L);
-				throw self::HTTPException(500, "lua script load failure."s);
-			}
-			lua_close(L);
+			json jsondata{ json::parse(std::move(return_data)) };
+			
+			std::exchange(jsondata, jsondata.at(0));
+
+			if (jsondata.at("status").get<int>() != 0) throw HTTPException(jsondata.at("data").at("msg").get<std::string>(), jsondata.at("data").at("code").get<uint16_t>(), jsondata.at("data").at("extra"), jsondata.at("status").get<int>());
 
 			try {
 				// 创建一个Image对象
@@ -64,7 +75,7 @@ void self::RouteOther::draw(void) {
 				std::string temp_file_name{ self::Tools::UUIDGenerator() + ".svg" }, path{ Global::temp_path / temp_file_name };
 				std::ofstream temp_file(path);
 				if (temp_file.is_open()) {
-					temp_file << svg_code;
+					temp_file << jsondata.at("code").get<std::string>();
 				}
 				else {
 					temp_file.close();
@@ -90,6 +101,11 @@ void self::RouteOther::draw(void) {
 					for (const auto& imgpath : temp_filename_vec) {
 						std::filesystem::remove(imgpath);
 					}
+				}
+
+				// 额外的lua操作
+				if (jsondata.at("extraControl").get<bool>()) {
+					luaHandle(jsondata.at("data").at("luaFile").get<std::string>(), jsondata.at("data").at("luaFunction").get<std::string>(), jsondata.at("data").at("content"));
 				}
 
 				return std::string(reinterpret_cast<const char*>(blob.data()), blob.length());

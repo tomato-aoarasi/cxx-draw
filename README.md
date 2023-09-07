@@ -36,7 +36,8 @@ Lua5.4
 ※使用了PkgConfig
 
 ## Lua用了哪些库?
-<code>- lua-cjson</code>
+<pre><code>- lua-cjson
+- luasocket</code></pre>
 
 ## 怎么编译
 
