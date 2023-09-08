@@ -18,14 +18,6 @@
 #include <functional>
 #include <snowflake.hpp>
 
-#if ENABLED_ASYNCIO
-#include <asyncio/task.h>
-#include <asyncio/runner.h>
-#include <asyncio/sleep.h>
-#include <asyncio/schedule_task.h>
-#include <asyncio/callstack.h>
-#endif
-
 #include <configuration/define.hpp>
 #include "opencv2/opencv.hpp"
 #include "Poco/UUID.h"
@@ -209,33 +201,6 @@ namespace self {
 		response.set_header("Content-Type", "application/json");
 		return response;
 	}
-
-#if ENABLED_ASYNCIO
-	inline crow::response AsyncHandleResponseBody(std::function<asyncio::Task<std::string>(void)> f, const std::string& content_type = "application/json") {
-		crow::response response;
-		response.set_header("Content-Type", content_type);
-		try {
-			response.write(asyncio::run(f()));
-			response.code = 200;
-			return response;
-		}
-		catch (const self::HTTPException& except) {
-			response.write(HTTPUtil::StatusCodeHandle::getSimpleJsonResult(except.getCode(), except.getMessage(), except.getJson(), except.getStatus()).dump(2));
-			response.code = except.getCode();
-		}
-		catch (const json::out_of_range& except) {
-			response.write(HTTPUtil::StatusCodeHandle::getSimpleJsonResult(400, except.what()).dump(2));
-			response.code = 400;
-		}
-		catch (const std::exception& except) {
-			response.write(HTTPUtil::StatusCodeHandle::getSimpleJsonResult(500, except.what()).dump(2));
-			response.code = 500;
-		}
-		response.set_header("Content-Type", "application/json");
-		return response;
-	}
-#endif
-	//RateLimiterCache cache(10000); // 设置缓存大小为10000
 }
 
 #endif // !UTILS_HPP

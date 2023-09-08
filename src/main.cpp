@@ -1,6 +1,4 @@
-#define _DEBUG
-#define ENABLED_ASYNCIO false
-#include <main.h>
+#define __DEBUG
 
 #ifdef DEBUG
 #include <test/bing/test_project.hpp>
@@ -9,7 +7,6 @@ int main(int argc, char* argv[]) {
     std::cout << "\033[44m--* DEBUG START *--\033[0m\n";
 
     // Magick::InitializeMagick(*argv);
-    init();
 
     TestProject::test();
 
@@ -18,7 +15,7 @@ int main(int argc, char* argv[]) {
 }
 #endif // DEBUG
 #ifndef DEBUG
-
+#include <main.h>
 
 int main(int argc, char* argv[])
 {

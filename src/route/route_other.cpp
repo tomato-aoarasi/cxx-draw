@@ -83,17 +83,38 @@ void self::RouteOther::draw(void) {
 				}
 				temp_file.close();
 
-				// 从SVG文件中读取图像
-				image.read(path);
+				std::string result{};
 
-				// 设置输出文件格式为PNG
-				image.magick(image_output_type);
+				if (Global::drawMode == 0) {
+					Magick::Blob blob;
+					// 从SVG文件中读取图像
+					image.read(path);
 
-				// 将图像写入到PNG文件中
-				Magick::Blob blob;
-				//image.write("output.png");
+					// 设置输出文件格式为PNG
+					image.magick(image_output_type);
 
-				image.write(&blob);
+					// 将图像写入到PNG文件中
+					//image.write("output.png");
+
+					image.write(&blob);
+
+					result = std::string(reinterpret_cast<const char*>(blob.data()), blob.length());
+				} else if(Global::drawMode == 1) {
+					auto doc{ System::MakeObject<Aspose::Words::Document>() };
+					auto builder{ System::MakeObject<Aspose::Words::DocumentBuilder>(doc) };
+					doc.reset();
+
+					std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
+					std::u16string u16Path = convert.from_bytes(path);
+
+					auto shape{ builder->InsertImage(System::String(u16Path)) };
+					builder.reset();
+
+					auto bytes{ shape->get_ImageData()->get_ImageBytes()->data() };
+					shape.reset();
+
+					result = std::string(bytes.begin(), bytes.end());
+				} else { throw HTTPException("This drawing type doesn't exist"s, 500); }
 
 				// 删除临时文件
 				{
@@ -108,7 +129,7 @@ void self::RouteOther::draw(void) {
 					luaHandle(jsondata.at("data").at("luaFile").get<std::string>(), jsondata.at("data").at("luaFunction").get<std::string>(), jsondata.at("data").at("content"));
 				}
 
-				return std::string(reinterpret_cast<const char*>(blob.data()), blob.length());
+				return result;
 			}
 			catch (const std::exception& ex) {
 				throw HTTPException(500, -1, std::string(ex.what()));

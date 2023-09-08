@@ -8,17 +8,7 @@
 
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
-
-#if ENABLED_ASYNCIO
-#include <asyncio/task.h>
-#include <asyncio/runner.h>
-#include <asyncio/sleep.h>
-#include <asyncio/schedule_task.h>
-#include <asyncio/callstack.h>
-#endif
-
 #include <sw/redis++/redis++.h>
-#include "bcrypt.h"
 
 namespace std {
     using fmt::format;

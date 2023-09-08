@@ -11,6 +11,18 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
+
+#include <Aspose.Words.Cpp/Document.h>
+#include <Aspose.Words.Cpp/DocumentBuilder.h>
+#include <Aspose.Words.Cpp/Drawing/Shape.h>
+#include <Aspose.Words.Cpp/Drawing/ImageData.h>
+#include <Aspose.Words.Cpp/SaveFormat.h>
+#include <Aspose.Words.Cpp/Saving/IResourceSavingCallback.h>
+#include <Aspose.Words.Cpp/Saving/ResourceSavingArgs.h>
+#include <Aspose.Words.Cpp/Saving/SaveOutputParameters.h>
+#include <Aspose.Words.Cpp/Saving/SvgSaveOptions.h>
+#include <Aspose.Words.Cpp/Saving/SvgTextOutputMode.h>
+
 #include "nlohmann/json.hpp"
 #include "yaml-cpp/yaml.h"
 #include "fmt/format.h"
@@ -51,6 +63,8 @@ namespace Global {
 	inline self::define::ExecutableFileInfo execute_info;
 	inline std::filesystem::path temp_path { Config::config_yaml["temporary"]["path"].as<std::string>()};
 	inline std::filesystem::path lua_directory{ Config::config_yaml["lua"]["directory"].as<std::string>()};
+	// 0: libmagick++, 1: Aspose.Words.Cpp
+	inline uint8_t drawMode{ Config::config_yaml["server"]["draw-mode"].as<uint8_t>() };
 };
 
 namespace self::DB {
@@ -87,7 +101,7 @@ namespace Config {
 		}
 
 		// ImageMagick init
-		{
+		if(Global::drawMode == 0){
 			Magick::InitializeMagick(Global::execute_info.path.data());
 		}
 

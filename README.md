@@ -28,6 +28,7 @@ Lua5.4
 - bcrypt-cpp
 - generator_coroutine
 - snowflake-cpp
+- Aspose.Words.Cpp
 - lua5.4
 - libmagick++
 </code></pre>

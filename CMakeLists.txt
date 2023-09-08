@@ -3,8 +3,6 @@
 #
 cmake_minimum_required (VERSION 3.22)
 
-option(ENABLED_ASYNCIO "启用协程" OFF)
-
 #vcpkg
 # 手动设置到你的vcpkg根目录
 set(VCPKG_ROOT "/home/software/vcpkg")
@@ -50,6 +48,11 @@ set(VCPKG_INCLUDE ${VCPKG_ROOT}/installed/x64-linux/include)
 set(LOCAL_INCLUDE /usr/local/include)
 set(GLOBAL_INCLUDE /usr/include)
 set(SELF_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
+
+set(ASPOSE_WORDS_DIR "/usr/local/Aspose.Words.Cpp")
+set(ASPOSE_WORDS_CPP "${ASPOSE_WORDS_DIR}/Aspose.Words.Cpp")
+set(ASPOSE_WORDS_CODE_PORTING_CPP "${ASPOSE_WORDS_DIR}/CodePorting.Translator.Cs2Cpp.Framework")
+set(ASPOSE_WORDS_SHAPING_CPP "${ASPOSE_WORDS_DIR}/Aspose.Words.Shaping.HarfBuzz.Cpp")
 
 include_directories(VCPKG_INCLUDE)
 include_directories(LOCAL_INCLUDE)
@@ -138,6 +141,20 @@ add_definitions(-DMAGICKCORE_QUANTUM_DEPTH=8)
 # 设置MagickCore库的HDRI_ENABLE为configure时的默认值
 add_definitions(-DMAGICKCORE_HDRI_ENABLE=0)
 
+# aspose.words.cpp
+include_directories(
+	${ASPOSE_WORDS_CPP}/include
+	${ASPOSE_WORDS_CODE_PORTING_CPP}/include
+	${ASPOSE_WORDS_CPP}/include
+)
+
+link_directories(
+	${LOCAL_LIB_DIR}
+	${ASPOSE_WORDS_CPP}/lib
+	${ASPOSE_WORDS_CODE_PORTING_CPP}/lib
+	${ASPOSE_WORDS_SHAPING_CPP}/lib
+)
+
 # Local lib
 link_directories(${LOCAL_LIB_DIR})
 # 三方库结束
@@ -159,15 +176,11 @@ add_executable (${PROJECT_NAME} ${SRC_LIST})
 # 动态库链接
 # target_include_directories(${PROJECT_NAME})
 
-# 导入动态库
-if (ENABLED_ASYNCIO)
-	add_library(asyncio SHARED IMPORTED)
-	set_target_properties(asyncio PROPERTIES IMPORTED_LOCATION ${LOCAL_LIB_DIR}/libasyncio.so)
-	target_link_libraries(${PROJECT_NAME} PUBLIC asyncio)
-endif()
-
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENSSL_LIBRARIES} ${SQLITE_MODERN_CPP_INCLUDE_DIRS} ${LUA_LIBRARIES} ${OpenCV_LIBS}
 ${Boost_LIBRARIES} ${Poco_LIBRARIES} ${ImageMagick_LIBRARIES} nlohmann_json::nlohmann_json fmt::fmt sqlite3 unofficial::sqlite3::sqlite3 yaml-cpp 
+libcodeporting.translator.cs2cpp.framework_x86_64_libstdcpp_libc2.23.so
+libAspose.Words.Shaping.HarfBuzz.Cpp.so 
+libAspose.Words.Cpp.so
 Crow::Crow spdlog::spdlog cryptopp::cryptopp libbcrypt.a)
 
 message(G:${CMAKE_C_COMPILER_VERSION},GXX:${CMAKE_CXX_COMPILER_VERSION},CXX STANDARD:${CMAKE_CXX_STANDARD})

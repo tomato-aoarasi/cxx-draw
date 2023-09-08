@@ -7,6 +7,16 @@
 #include <common/utils.hpp>
 #include <service/other/other_service.hpp>
 #include "lua5.4/lua.hpp"
+#include <Aspose.Words.Cpp/Document.h>
+#include <Aspose.Words.Cpp/DocumentBuilder.h>
+#include <Aspose.Words.Cpp/Drawing/Shape.h>
+#include <Aspose.Words.Cpp/Drawing/ImageData.h>
+#include <Aspose.Words.Cpp/SaveFormat.h>
+#include <Aspose.Words.Cpp/Saving/IResourceSavingCallback.h>
+#include <Aspose.Words.Cpp/Saving/ResourceSavingArgs.h>
+#include <Aspose.Words.Cpp/Saving/SaveOutputParameters.h>
+#include <Aspose.Words.Cpp/Saving/SvgSaveOptions.h>
+#include <Aspose.Words.Cpp/Saving/SvgTextOutputMode.h>
 
 namespace self {
 	class RouteOther final {

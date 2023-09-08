@@ -11,6 +11,7 @@ temporary:
 lua:
   directory: "./lua"
 server:
+  draw-mode: 1
   generator:
     uuid:
       namespace: "00000000-0000-0000-0000-000000000000"
