@@ -12,6 +12,7 @@ lua:
   directory: "./lua"
 server:
   draw-mode: 1
+  # font-folder: "./resource/font"
   generator:
     uuid:
       namespace: "00000000-0000-0000-0000-000000000000"

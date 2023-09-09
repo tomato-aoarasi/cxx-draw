@@ -18,7 +18,6 @@ Lua5.4
 - opencv
 - sqlite-modern-cpp
 - cryptopp
-- asyncio
 - nlohmann-json
 - yaml-cpp
 - spdlog

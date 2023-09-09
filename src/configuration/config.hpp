@@ -34,6 +34,22 @@
 #include <Poco/Net/SecureSMTPClientSession.h>
 #include <Poco/Net/NetException.h>
 #include "ImageMagick-6/Magick++.h"
+#include <Aspose.Words.Cpp/Document.h>
+#include <Aspose.Words.Cpp/DocumentBuilder.h>
+#include <Aspose.Words.Cpp/Drawing/Shape.h>
+#include <Aspose.Words.Cpp/Drawing/ImageData.h>
+#include <Aspose.Words.Cpp/SaveFormat.h>
+#include <Aspose.Words.Cpp/Saving/IResourceSavingCallback.h>
+#include <Aspose.Words.Cpp/Saving/ResourceSavingArgs.h>
+#include <Aspose.Words.Cpp/Saving/SaveOutputParameters.h>
+#include <Aspose.Words.Cpp/Saving/SvgSaveOptions.h>
+#include <Aspose.Words.Cpp/Saving/SvgTextOutputMode.h>
+#include <Aspose.Words.Cpp/WarningInfo.h>
+#include <Aspose.Words.Cpp/IWarningCallback.h>
+#include <Aspose.Words.Cpp/Fonts/FontSettings.h>
+#include <Aspose.Words.Cpp/Fonts/FolderFontSource.h>
+#include <Aspose.Words.Cpp/Fonts/FolderFontSource.h>
+#include <Aspose.Words.Cpp/Fonts/PhysicalFontInfo.h>
 #include "configuration/define.hpp"
 
 #ifndef CONFIG_HPP
@@ -65,6 +81,9 @@ namespace Global {
 	inline std::filesystem::path lua_directory{ Config::config_yaml["lua"]["directory"].as<std::string>()};
 	// 0: libmagick++, 1: Aspose.Words.Cpp
 	inline uint8_t drawMode{ Config::config_yaml["server"]["draw-mode"].as<uint8_t>() };
+
+	inline auto fontSettings { System::MakeObject<Aspose::Words::Fonts::FontSettings>() };
+	inline bool isSetFontFolder{ false };
 };
 
 namespace self::DB {
@@ -103,6 +122,20 @@ namespace Config {
 		// ImageMagick init
 		if(Global::drawMode == 0){
 			Magick::InitializeMagick(Global::execute_info.path.data());
+		} 
+		// Aspose.Words.Cpp init
+		else if (Global::drawMode == 1) 
+		{
+			auto font_folder{ Config::config_yaml["server"]["font-folder"] };
+			if (font_folder) {
+				std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
+				std::u16string u16Path = convert.from_bytes(font_folder.as<std::string>());
+
+				Global::fontSettings->SetFontsFolder(System::String(u16Path), true);
+
+				Global::isSetFontFolder = true;
+			}
+			if (!Global::isSetFontFolder) Global::fontSettings.reset();
 		}
 
 		// svg临时文件夹的创建

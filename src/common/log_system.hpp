@@ -97,6 +97,18 @@ namespace LogSystem {
 	inline void logError(std::string_view record_literal) {
 		dailyLogRecord(record_literal, logType::error);
 	};
+
+
+	class HandleDocumentSubstitutionWarnings : public Aspose::Words::IWarningCallback
+	{
+	public:
+		void Warning(System::SharedPtr<Aspose::Words::WarningInfo> info) override
+		{
+			if (info->get_WarningType() == Aspose::Words::WarningType::FontSubstitution) {
+				LogSystem::logWarn(info->get_Description().ToUtf8String());
+			}
+		}
+	};
 };
 
 #endif
