@@ -61,7 +61,6 @@ include_directories(${SQLITE_MODERN_INCLUDE_PATH}/include)
 
 find_package(Boost REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(Freetype REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(yaml-cpp REQUIRED)
@@ -97,9 +96,6 @@ find_path(SQLITE_MODERN_CPP_INCLUDE_DIRS "sqlite_modern_cpp.h")
 
 # POCO引入
 find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL JWT JSON Util)
-
-# Freetype引入
-include_directories(${FREETYPE_INCLUDE_DIRS})
 
 #set(POCO_INSTALL_DIR /usr/lib/x86_64-linux-gnu/cmake/Poco)
 
@@ -167,7 +163,7 @@ add_executable (${PROJECT_NAME} ${SRC_LIST})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENSSL_LIBRARIES} ${SQLITE_MODERN_CPP_INCLUDE_DIRS} ${LUA_LIBRARIES} ${OpenCV_LIBS}
 ${Boost_LIBRARIES} ${Poco_LIBRARIES} ${ImageMagick_LIBRARIES} nlohmann_json::nlohmann_json fmt::fmt sqlite3 unofficial::sqlite3::sqlite3 
-Freetype::Freetype yaml-cpp 
+yaml-cpp 
 libcodeporting.translator.cs2cpp.framework_x86_64_libstdcpp_libc2.23.so
 libAspose.Words.Shaping.HarfBuzz.Cpp.so 
 libAspose.Words.Cpp.so
