@@ -6,6 +6,10 @@
 #include <configuration/config.hpp>
 #include <common/utils.hpp>
 #include <service/other/other_service.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/freetype.hpp>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace self {
 	class RouteUtils final {

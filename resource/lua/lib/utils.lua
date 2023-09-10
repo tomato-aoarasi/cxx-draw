@@ -59,4 +59,8 @@ function utils.gaussianBlurSimple(filePath, sigmaX, imageType)
     return utils.gaussianBlur(filePath, nil, {sigmaX = sigmaX, imageType = imageType})
 end
 
+function utils.timestampToDate(timeStamp)
+    return os.date("%Y-%m-%d %H:%M:%S")
+end
+
 return utils

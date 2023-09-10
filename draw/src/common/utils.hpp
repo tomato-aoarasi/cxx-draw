@@ -33,6 +33,32 @@
 
 namespace self {
 	namespace Tools {
+		/// <summary>
+		/// 分割字符串为std::string
+		/// </summary>
+		/// <param name="str">需要分割的字符串</param>
+		/// <param name="pattern">分割的字符</param>
+		/// <returns>返回分割的std::string</returns>
+		inline static std::vector<std::string> split(std::string str, std::string pattern)
+		{
+			std::string::size_type pos;
+			std::vector<std::string> result;
+			str += pattern;//扩展字符串以方便操作
+			int size = str.size();
+			for (int i = 0; i < size; i++)
+			{
+				pos = str.find(pattern, i);
+				if (pos < size)
+				{
+					std::string s = str.substr(i, pos - i);
+					result.emplace_back(s);
+					i = pos + pattern.size() - 1;
+				}
+			}
+			return result;
+		}
+
+
 		inline void HexDebug(const auto& content) {
 			for (const auto& data : content)
 			{
