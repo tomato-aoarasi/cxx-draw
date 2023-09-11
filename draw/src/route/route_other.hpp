@@ -8,6 +8,7 @@
 #include <service/other/other_service.hpp>
 #include "lua5.4/lua.hpp"
 
+
 namespace self {
 	class RouteOther final {
 	private:
@@ -132,8 +133,12 @@ void self::RouteOther::draw(void) {
 				else if (Global::drawMode == 1) {
 					auto doc{ System::MakeObject<Aspose::Words::Document>() };
 
+					auto fontSettings{ System::MakeObject<Aspose::Words::Fonts::FontSettings>() };
+
 					if (Global::isSetFontFolder) {
-						doc->set_FontSettings(Global::fontSettings);
+						fontSettings->SetFontsFolder(Global::fontPath, true);
+
+						doc->set_FontSettings(fontSettings);
 					}
 
 					// ×ÖÌåÈ±Ê§¾¯¸æ
@@ -148,11 +153,14 @@ void self::RouteOther::draw(void) {
 					auto shape{ builder->InsertImage(System::String(u16Path)) };
 
 					auto bytes{ shape->get_ImageData()->get_ImageBytes()->data() };
-					shape.reset();
-					builder.reset();
-					doc.reset();
+
+					fontSettings->ResetFontSources();
+					doc->RemoveAllChildren();
+					doc->Cleanup();
+					shape->Remove();
 
 					result = std::string(bytes.begin(), bytes.end());
+					bytes.clear();
 				}
 				else { throw HTTPException("This drawing type doesn't exist"s, 500); }
 

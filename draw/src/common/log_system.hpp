@@ -11,8 +11,6 @@
 #include "configuration/config.hpp"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/daily_file_sink.h"
-#include <iostream>
-
 #ifndef LOG_SYSTEM_HPP
 #define LOG_SYSTEM_HPP  
 
