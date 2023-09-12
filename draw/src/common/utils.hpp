@@ -187,17 +187,17 @@ namespace self {
 			return data;
 		}
 
-		inline void saveBase64Image(const std::string& base64_data, const std::string& filename) {
+		inline void saveBase64Image(std::string_view base64_data, std::string_view filename) {
 			cv::Mat save_image{};
 			try {
 				// 将base64编码的图像数据解码为二进制数据
-				auto binary_data{ base64Decode(base64_data) };
+				auto binary_data{ base64Decode(base64_data.data()) };
 
 				// 从内存中解码图像数据
 				save_image = cv::imdecode(binary_data, cv::IMREAD_UNCHANGED);
 
 				// 将图像保存为PNG格式文件
-				cv::imwrite(filename, save_image);
+				cv::imwrite(filename.data(), save_image);
 			}
 			catch (...) {
 				save_image.release();

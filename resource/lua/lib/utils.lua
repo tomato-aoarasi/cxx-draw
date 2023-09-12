@@ -63,4 +63,8 @@ function utils.timestampToDate(timeStamp)
     return os.date("%Y-%m-%d %H:%M:%S")
 end
 
+function utils.isnan(value)
+    return value ~= value
+end
+
 return utils
