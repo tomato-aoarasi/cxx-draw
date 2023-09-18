@@ -67,4 +67,13 @@ function utils.isnan(value)
     return value ~= value
 end
 
+function utils.escapeHtml(str)
+    str = string.gsub(str, "&", "&amp;")
+    str = string.gsub(str, "<", "&lt;")
+    str = string.gsub(str, ">", "&gt;")
+    str = string.gsub(str, "\"", "&quot;")
+    str = string.gsub(str, "'", "&#39;")
+    return str
+end
+
 return utils
