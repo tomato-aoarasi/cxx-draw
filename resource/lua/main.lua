@@ -16,7 +16,7 @@ function getSvgCode(jsonObject)
         file:close()
         
         -- 将内容打印出来
-        return export.success_control(content)
+        return core.success_control(content)
     end
-    return export.error(1, 418, "teapot test")
+    return core.error(1, 418, "teapot test")
 end

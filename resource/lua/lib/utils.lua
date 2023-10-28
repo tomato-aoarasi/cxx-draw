@@ -60,7 +60,7 @@ function utils.gaussianBlurSimple(filePath, sigmaX, imageType)
 end
 
 function utils.timestampToDate(timeStamp)
-    return os.date("%Y-%m-%d %H:%M:%S")
+    return os.date("%Y-%m-%d %H:%M:%S", timeStamp)
 end
 
 function utils.isnan(value)
@@ -74,6 +74,11 @@ function utils.escapeHtml(str)
     str = string.gsub(str, "\"", "&quot;")
     str = string.gsub(str, "'", "&#39;")
     return str
+end
+
+-- 转为SVG的正确比率值
+function utils.toSVGScale(value)
+    return value * 4 / 3
 end
 
 return utils

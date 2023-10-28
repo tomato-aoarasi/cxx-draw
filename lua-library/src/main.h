@@ -72,25 +72,29 @@ int add(lua_State* L)
 }
 # endif
 
-/* 定义C++的Average 函数 */
+// 文本处理函数
 int handle_text(lua_State* L)
 {
 	std::string text{}, fontPath{};
-	int fontSize{}, maxSize{};
+	lua_Integer fontSize{}, maxSize{}, maxLine{ 255 };
 	bool isRows{ false };
-	// 最大容许多少行
-	uint8_t maxLine{ 255 };
 
+	// 第1个参数为文本参数
 	text = lua_tostring(L, 1);
+	// 第2个参数为字体路径参数
 	fontPath = lua_tostring(L, 2);
+	// 第3个参数为字体大小
 	fontSize = lua_tointeger(L, 3);
+	// 第4个参数为最大尺寸限制
 	maxSize = lua_tointeger(L, 4);
 
 	if (!lua_isnoneornil(L, 5)) {
+		// 第5个参数为是否开启多行处理模式
 		isRows = lua_toboolean(L, 5);
 	}
 
 	if (!lua_isnoneornil(L, 6)) {
+		// 第6个参数为多行处理最多为多少行
 		maxLine = lua_tointeger(L, 6);
 	}
 
@@ -203,7 +207,34 @@ int handle_text(lua_State* L)
 		// *结束*
 	}
 
+	freetype2.release();
+
 	return 1;
+}
+
+// 获取文本尺寸函数(width,height)
+int get_text_size(lua_State* L) {
+	std::string 
+		// 第1个参数为文本参数
+		text{ lua_tostring(L, 1) }, 
+		// 第2个参数为字体路径参数
+		fontPath{ lua_tostring(L, 2) };
+	
+	// 第3个参数为字体大小
+	lua_Integer fontSize{ lua_tointeger(L, 3) };
+
+	auto freetype2{ cv::freetype::createFreeType2() };
+	freetype2->loadFontData(fontPath, 0);
+
+	auto textSize{ freetype2->getTextSize(text, fontSize, -1, nullptr) };
+
+	freetype2.release();
+
+	lua_pushnumber(L, textSize.width);  //平均值入栈
+
+	lua_pushnumber(L, textSize.height);  //和入栈
+
+	return 2; // 返回2个参数
 }
 
 extern "C" int luaopen_libluadraw(lua_State * L);

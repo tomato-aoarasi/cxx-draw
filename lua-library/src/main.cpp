@@ -4,6 +4,7 @@
 static luaL_Reg lua_draw_functions[] =
 {
 	{"handle_text", handle_text},
+	{"get_text_size", get_text_size},
 	{NULL, NULL}  // 数组中最后一对必须是{NULL, NULL}，用来表示结束
 };
 

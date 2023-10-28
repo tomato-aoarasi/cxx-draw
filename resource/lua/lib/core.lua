@@ -1,8 +1,9 @@
 local json = require("cjson")
 
-export = {}
+core = {}
 
-function export.encode(status, svg_code, data, extra_control)
+-- json编码
+function core.encode(status, svg_code, data, extra_control)
     status = status or 0
     svg_code = svg_code or ""
     data = data or nil
@@ -18,24 +19,27 @@ function export.encode(status, svg_code, data, extra_control)
     return tostring(payload)
 end
 
-function export.error(status, code, msg, extra)
+-- 抛出HTTP错误
+function core.error(status, code, msg, extra)
     extra = extra or {}
     msg = msg or ""
 
-    return export.encode(status, "", {msg = msg, code = code, extra = extra}, false)
+    return core.encode(status, "", {msg = msg, code = code, extra = extra}, false)
 end
 
-function export.complete_control(svg_code, lua_file, lua_function , content)
+-- 复杂操作(第二步执行)
+function core.complete_control(svg_code, lua_file, lua_function , content)
     local data = {
         luaFile = lua_file,
         luaFunction = lua_function,
         content = content or {}
     }
-    return export.encode(0, svg_code, data, true)
+    return core.encode(0, svg_code, data, true)
 end
 
-function export.success_control(svg_code)
-    return export.encode(0, svg_code)
+-- 成功操作
+function core.success_control(svg_code)
+    return core.encode(0, svg_code)
 end
 
-return export
+return core
