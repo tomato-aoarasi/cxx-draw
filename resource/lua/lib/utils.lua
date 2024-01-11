@@ -81,4 +81,35 @@ function utils.toSVGScale(value)
     return value * 4 / 3
 end
 
+function utils.format(fmt, ...)
+    local function string_count(str, match)
+        local count = 0
+
+        for match in string.gmatch(str, match) do
+            count = count + 1
+        end
+        return count
+    end
+
+    local arg = {...}
+
+    local appoint_index = string.find(fmt, "{0}")
+
+    if appoint_index ~= nil then
+        for index = 1, #arg do
+            local argv = "{" .. tostring(index - 1) .. "}"
+            local count = string_count(fmt, argv)
+            if count < 1 then
+                break
+            end
+            fmt = string.gsub(fmt, argv, tostring(arg[index]))
+        end
+    else
+        for index = 1, #arg do
+            fmt = string.gsub(fmt, "{}", tostring(arg[index]), 1)
+        end
+    end
+    return fmt
+end
+
 return utils
