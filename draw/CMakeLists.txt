@@ -48,10 +48,6 @@ include_directories(VCPKG_INCLUDE)
 include_directories(LOCAL_INCLUDE)
 include_directories(GLOBAL_INCLUDE)
 
-# boost
-set(BOOST_INCLUDE_PATH /usr/include/boost)
-include_directories(${BOOST_INCLUDE_PATH})
-
 # OpenSSL
 include_directories(${OPENSSL_INCLUDE_DIR})
 
@@ -59,7 +55,6 @@ include_directories(${OPENSSL_INCLUDE_DIR})
 set(SQLITE_MODERN_INCLUDE_PATH ${VCPKG_ROOT}/packages/sqlite-modern-cpp_x64-linux)
 include_directories(${SQLITE_MODERN_INCLUDE_PATH}/include)
 
-find_package(Boost REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(nlohmann_json REQUIRED)
@@ -114,10 +109,6 @@ include_directories(${BCRYPT_PATH}/include)
 link_directories(${BCRYPT_PATH}/lib)
 link_directories(${VCPKG_LIB})
 
-# boost
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
-
 # imageMagick
 find_package(ImageMagick COMPONENTS Magick++)
 include_directories(${ImageMagick_INCLUDE_DIRS})
@@ -162,7 +153,7 @@ add_executable (${PROJECT_NAME} ${SRC_LIST})
 # target_include_directories(${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENSSL_LIBRARIES} ${SQLITE_MODERN_CPP_INCLUDE_DIRS} ${LUA_LIBRARIES} ${OpenCV_LIBS}
-${Boost_LIBRARIES} ${Poco_LIBRARIES} ${ImageMagick_LIBRARIES} nlohmann_json::nlohmann_json fmt::fmt sqlite3 unofficial::sqlite3::sqlite3 
+${Poco_LIBRARIES} ${ImageMagick_LIBRARIES} nlohmann_json::nlohmann_json fmt::fmt sqlite3 unofficial::sqlite3::sqlite3 
 yaml-cpp 
 libcodeporting.translator.cs2cpp.framework_x86_64_libstdcpp_libc2.23.so
 libAspose.Words.Shaping.HarfBuzz.Cpp.so 

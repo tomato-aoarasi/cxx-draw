@@ -8,7 +8,6 @@
 
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
-#include <sw/redis++/redis++.h>
 
 namespace std {
     using fmt::format;

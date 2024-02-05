@@ -2,12 +2,12 @@
 
 #include "crow.h"
 #include <filesystem>
-#include "string"
+#include <string>
+#include <algorithm>
 #include <configuration/config.hpp>
 #include <common/utils.hpp>
 #include <service/other/other_service.hpp>
 #include "lua5.4/lua.hpp"
-
 
 namespace self {
 	class RouteOther final {
@@ -61,10 +61,18 @@ void self::RouteOther::draw(void) {
 		json data{ json::parse(req.body.empty() ? "{}" : req.body) }, json_data{};
 		std::exchange(data, data[0]);
 
+		int quality{ 100 };
+
 		std::string
 			image_output_type{ "jpg" };
 
-		if (data.count("imageType"))image_output_type = data.at("imageType").get<std::string>();
+		if (data.count("imageType")) {
+			image_output_type = data.at("imageType").get<std::string>();
+			std::transform(image_output_type.begin(), image_output_type.end(), image_output_type.begin(), [](unsigned char c) { return std::tolower(c); });
+		}
+		if (data.count("quality")) {
+			quality = data.at("quality").get<int>();
+		}
 		if (data.count("data"))json_data = data.at("data");
 
 		return self::HandleResponseBody([&]() -> std::string {
@@ -159,10 +167,24 @@ void self::RouteOther::draw(void) {
 					doc->Cleanup();
 					shape->Remove();
 
+					if (((image_output_type == "jpg") or (image_output_type == "jpeg")) and (quality <= 100 and quality >= 0)) {
+						cv::Mat image { cv::imdecode(bytes, cv::IMREAD_UNCHANGED) };
+
+						if (image.empty()) {
+							bytes.clear();
+							throw HTTPException("Unable to decode image from bytes.", 500);
+						}
+
+						std::vector<int> compression_params;
+						compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
+						compression_params.push_back(quality);
+
+						cv::imencode(".jpg", image, bytes, compression_params);
+					}
+
 					result = std::string(bytes.begin(), bytes.end());
 					bytes.clear();
-				}
-				else { throw HTTPException("This drawing type doesn't exist"s, 500); }
+				} else { throw HTTPException("This drawing type doesn't exist"s, 500); }
 
 				// É¾³ýÁÙÊ±ÎÄ¼þ
 				{

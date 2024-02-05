@@ -1,6 +1,7 @@
 local json = require("cjson")
 local http = require("socket.http")
 local ltn12 = require("ltn12")
+local lfs = require("lfs")
 
 utils = {}
 
@@ -81,6 +82,24 @@ function utils.toSVGScale(value)
     return value * 4 / 3
 end
 
+-- 从SVG比例转为正确比率值
+function utils.toNormalScale(value)
+    return value * 3 / 4
+end
+
+function utils.findMaxTable(table)
+    local max_value,index = table[1],1
+
+    for i, num in ipairs(table) do
+        if num > max_value then
+            max_value = num
+            index = i
+        end
+    end
+
+    return max_value, index
+end
+
 function utils.format(fmt, ...)
     local function string_count(str, match)
         local count = 0
@@ -110,6 +129,23 @@ function utils.format(fmt, ...)
         end
     end
     return fmt
+end
+
+function utils.getSubdirectories(directory)
+    local subdirectories = {} -- 存放子目录名称的表格
+
+    for file in lfs.dir(directory) do
+        if file ~= "." and file ~= ".." then -- 过滤当前目录（.）和上级目录（..）
+            local path = directory .. "/" .. file
+
+            local attributes = lfs.attributes(path)
+            if attributes.mode == "directory" then -- 判断路径对应的属性为目录类型
+                table.insert(subdirectories, file) -- 将子目录添加到结果表格中
+            end
+        end
+    end
+
+    return subdirectories
 end
 
 return utils

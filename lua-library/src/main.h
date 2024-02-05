@@ -3,7 +3,7 @@
 #include <common.hpp>
 #include <codecvt>
 #include <memory>
-#include <lua.hpp>
+#include "lua5.4/lua.hpp"
 #include <opencv2/freetype.hpp>
 #include <ft2build.h>
 #include <bits/locale_conv.h>

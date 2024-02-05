@@ -31,7 +31,6 @@ include_directories(VCPKG_INCLUDE)
 include_directories(LOCAL_INCLUDE)
 include_directories(GLOBAL_INCLUDE)
 
-find_package(Boost REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(fmt REQUIRED)
@@ -47,10 +46,6 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Freetype引入
 include_directories(${FREETYPE_INCLUDE_DIRS})
-
-# boost
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
 
 # Local lib
 link_directories(${LOCAL_LIB_DIR})
@@ -68,7 +63,7 @@ file(GLOB_RECURSE SRC_LIST
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LUA_LIBRARIES} ${OpenCV_LIBS}
-${Boost_LIBRARIES} nlohmann_json::nlohmann_json fmt::fmt Freetype::Freetype)
+nlohmann_json::nlohmann_json fmt::fmt Freetype::Freetype)
 
 message(G:${CMAKE_C_COMPILER_VERSION},GXX:${CMAKE_CXX_COMPILER_VERSION},CXX STANDARD:${CMAKE_CXX_STANDARD})
 message(final)
