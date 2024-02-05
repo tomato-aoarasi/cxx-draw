@@ -171,6 +171,7 @@ void self::RouteOther::draw(void) {
 						cv::Mat image { cv::imdecode(bytes, cv::IMREAD_UNCHANGED) };
 
 						if (image.empty()) {
+							image.release();
 							bytes.clear();
 							throw HTTPException("Unable to decode image from bytes.", 500);
 						}
@@ -180,6 +181,7 @@ void self::RouteOther::draw(void) {
 						compression_params.push_back(quality);
 
 						cv::imencode(".jpg", image, bytes, compression_params);
+						image.release();
 					}
 
 					result = std::string(bytes.begin(), bytes.end());
